@@ -1,9 +1,11 @@
-import styled from 'styled-components';
+// import styled from 'styled-components';
 
-export default function ShoppingItems() {
-  return (
-    <ul>
-      <li>Item</li>
-    </ul>
-  );
-}
+// export default function ShoppingItems() {
+//   return (
+//     <ul>
+//       <li>
+//         <h2></h2>
+//       </li>
+//     </ul>
+//   );
+// }
