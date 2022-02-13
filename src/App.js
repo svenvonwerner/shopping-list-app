@@ -3,17 +3,10 @@ import styled from 'styled-components';
 // import ShoppingItems from './ShoppingItems.js';
 
 export default function App() {
-  const [shoppingItems, setShoppingItmes] = useState([]);
+  const [shoppingItems, setShoppingItems] = useState([]);
   const [hasError, setHasError] = useState(false);
-  const [userInput, setUserInput] = useState();
 
-  //const { search } = require('fast-fuzzy');
-
-  const handleChange = (event) => {
-    setUserInput(event.target.value);
-  };
-
-  //search("abc", ["def", "bcd", "cde", "abc"]); //returns ["abc", "bcd"]
+  //search('abc', ['def', 'bcd', 'cde', 'abc']); //returns ["abc", "bcd"]
 
   // search("input der searchbar z.B.: Brot"), [Inhalt unseres Arrays von loadShoppingItems.name]);
 
@@ -28,7 +21,7 @@ export default function App() {
       );
       if (response.ok) {
         const results = await response.json();
-        setShoppingItmes(results.data);
+        setShoppingItems(results.data);
       } else {
         throw new Error('404 - not found');
       }
@@ -37,28 +30,44 @@ export default function App() {
       setHasError(true);
     }
   }
-
   return (
     <AppBody>
       <header>Shopping list</header>
       <main>
         <ShoppingItemsList>
+          {/* {console.log(shoppingItems)} */}
           {shoppingItems.map(({ _id, name }) => (
             <ShoppingItem key={_id}>
               <h2>{name.de}</h2>
             </ShoppingItem>
           ))}
         </ShoppingItemsList>
-        <Searchbar />
+        <Searchbar shoppingItems={shoppingItems} />
       </main>
     </AppBody>
   );
 }
 
-function Searchbar() {
+function Searchbar({ shoppingItems }) {
+  const { search } = require('fast-fuzzy');
+  const [userInput, setUserInput] = useState('');
+
+  filteredItems();
+  function handleChange(event) {
+    setUserInput(event.target.value);
+  }
+
+  function filteredItems() {
+    const fuzziedItems = search(
+      userInput,
+      shoppingItems.map((item) => item.name.de)
+    );
+    return fuzziedItems;
+  }
+
   return (
     <>
-      <label for="search">What do you want to buy?</label>
+      <label htmlFor="search">What do you want to buy?</label>
 
       <input
         onChange={handleChange}
@@ -66,6 +75,21 @@ function Searchbar() {
         type="search"
         placeholder="Search"
       ></input>
+
+      {/* <output>
+        {console.log(
+          search(
+            userInput,
+            shoppingItems.map((item) => item.name.de)
+          )
+        )}
+      </output> */}
+      <SearchItemsList>
+        {search(
+          userInput,
+          shoppingItems.map((item) => item.name.de)
+        )}
+      </SearchItemsList>
     </>
   );
 }
@@ -73,9 +97,6 @@ function Searchbar() {
 // HandleChange löst Fuzzy aus
 // Keyselektor erforderlich?
 //
-function handleChange(event) {
-  setUserInput(event.target.value);
-}
 
 const AppBody = styled.div`
   border: 2px solid black;
@@ -97,4 +118,14 @@ const ShoppingItem = styled.li`
   background-color: orange;
   padding: 5px;
   font-weight: normal;
+`;
+
+const SearchItemsList = styled.ul`
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 0px;
+  padding-left: 0px;
+  gap: 0.5rem;
+  list-style: none;
 `;
