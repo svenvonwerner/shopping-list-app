@@ -5,12 +5,17 @@ import styled from 'styled-components';
 export default function App() {
   const [shoppingItems, setShoppingItmes] = useState([]);
   const [hasError, setHasError] = useState(false);
+  const [userInput, setUserInput] = useState();
 
-  const { search } = require('fast-fuzzy');
+  //const { search } = require('fast-fuzzy');
 
-  //search("abc", ["def", "bcd", "cde", "abc"]);
+  const handleChange = (event) => {
+    setUserInput(event.target.value);
+  };
 
-  //search("input der searchbar z.B.: Brot"), [Inhalt unseres Arrays von loadShoppingItems.name]);
+  //search("abc", ["def", "bcd", "cde", "abc"]); //returns ["abc", "bcd"]
+
+  // search("input der searchbar z.B.: Brot"), [Inhalt unseres Arrays von loadShoppingItems.name]);
 
   useEffect(() => {
     loadShoppingItems();
@@ -54,12 +59,23 @@ function Searchbar() {
   return (
     <>
       <label for="search">What do you want to buy?</label>
-      <input onChange={handleChange} type="search" placeholder="Search"></input>
+
+      <input
+        onChange={handleChange}
+        value={userInput}
+        type="search"
+        placeholder="Search"
+      ></input>
     </>
   );
 }
 
-function handleChange() {}
+// HandleChange löst Fuzzy aus
+// Keyselektor erforderlich?
+//
+function handleChange(event) {
+  setUserInput(event.target.value);
+}
 
 const AppBody = styled.div`
   border: 2px solid black;
